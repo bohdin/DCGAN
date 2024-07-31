@@ -2,15 +2,9 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import numpy as np
 from tensorflow.keras import layers
-import keras
-import os
-import time
 import tensorflow as tf
-import glob
-import PIL
-from keras.layers import Conv2DTranspose
-from IPython import display
-import io
+from PIL import Image
+
 # Generator
 
 def make_generator():
@@ -35,17 +29,7 @@ def make_generator():
 
 generator = make_generator()
 
-generator.load_weights('D:\\DCGAN\\models\\generator_weights.h5')
-
-# predictions = generator(tf.random.normal([16, 100]), training=False)
-
-# plt.figure(figsize=(10, 10))
-# for i in range(predictions.shape[0]):
-#     plt.subplot(4, 4, i+1)
-#     img_array = (predictions[i].numpy() * 127.5 + 127.5).astype(np.uint8)
-#     plt.imshow(img_array)
-#     plt.axis('off')
-# plt.show()
+generator.load_weights('.\\models\\generator_weights.h5')
 
 
 # Discriminator
@@ -68,7 +52,7 @@ def make_discriminator():
 
 discriminator = make_discriminator()
 
-discriminator.load_weights('D:\\DCGAN\\models\\discriminator_weights.h5')
+discriminator.load_weights('.\\models\\discriminator_weights.h5')
 
 # generated_image = generator(tf.random.normal([1, 100]), training=False)
 # img_array = (generated_image[0].numpy() * 127.5 + 127.5).astype(np.uint8)
@@ -83,23 +67,40 @@ st.write("Завантажте зображення та модель згене
 uploaded_file = st.file_uploader("Виберіть зображення...", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
-    st.image(uploaded_file, caption="Завантажене зображення", use_column_width=True)
-    st.write("")
-    st.write("Генерую зображення...")
-
-    noise = tf.random.normal([1, 100])
-    generated_image = generator(noise, training=False)
-    img_array = (generated_image[0].numpy() * 127.5 + 127.5).astype(np.uint8)
+    real_image = Image.open(uploaded_file)
+    st.image(real_image, caption="Завантажене зображення", use_column_width=True)
 
 
-    st.image(img_array, caption="Згенероване зображення.", use_column_width=True)
+    real_image = real_image.resize((32,32))
+    real_img_array = np.array(real_image)
+    real_img_array = (real_img_array - 127.5) / 127.5
+    real_img_array = np.expand_dims(real_img_array, axis=0)
 
+    verdict_real = discriminator(real_img_array, training=False).numpy()[0][0]
 
-    verdict = discriminator(generated_image, training=False).numpy()[0][0]
-    st.write(f"Відповідь дискримінатора: {verdict}")
-
-
-    if verdict > 0:
-        st.write("Дискримінатор визначив згенероване зображення правдивим.")
+    st.write(f"Відповідь дискримінатора для реального зображення: {verdict_real}")
+    if verdict_real > 0:
+         st.write("Дискримінатор визначив реальне зображення правдивим.")
     else:
-        st.write("Дискримінатор визначив згенероване зображення фейковим.")
+        st.write("Дискримінатор визначив реальне зображення фейковим.")
+
+    st.write("")
+
+    if st.button('Генерувати зображення'):
+        st.write("Генерую зображення...")
+
+        noise = tf.random.normal([1, 100])
+        generated_image = generator(noise, training=False)
+        generated_img_array = (generated_image[0].numpy() * 127.5 + 127.5).astype(np.uint8)
+
+        
+        st.image(generated_img_array, caption="Згенероване зображення.", use_column_width=True)
+
+        
+        verdict_fake = discriminator(generated_image, training=False).numpy()[0][0]
+        
+        st.write(f"Відповідь дискримінатора для згенерованого зображення: {verdict_fake}")
+        if verdict_fake > 0:
+            st.write("Дискримінатор визначив згенероване зображення правдивим.")
+        else:
+            st.write("Дискримінатор визначив згенероване зображення фейковим.")
