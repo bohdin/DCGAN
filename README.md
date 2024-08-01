@@ -1,15 +1,15 @@
 # DCGAN
 Цей проєкт передбачає створення DCGAN системи, здатної генерувати та ідентифікувати зображення. Система має дві основні компоненти: генеративну мережу для створення синтетичних зображень і дискримінативну мережу для визначення, чи є зображення справжнім, чи підробленим.
-# Dockerfile
-Увійти в Docker Hub (за потреби):
-docker login
-Завантажити образ з Docker Hub:
-docker pull bohdin/dcgan_app
-Запустити завантажений образ:
-docker run -p 8501:8501 bohdin/dcgan_app
-# Вимоги
-matplotlib==3.9.0
-numpy==1.26.4
-Pillow==10.3.0
-streamlit==1.36.0
-tensorflow==2.16.1
+## Dockerfile
+- Увійти в Docker Hub (за потреби):
+- docker login
+- Завантажити образ з Docker Hub:
+- docker pull bohdin/dcgan_app
+- Запустити завантажений образ:
+- docker run -p 8501:8501 bohdin/dcgan_app
+## Вимоги
+- `matplotlib==3.9.0`
+- `numpy==1.26.4`
+- `Pillow==10.3.0`
+- `streamlit==1.36.0`
+- `tensorflow==2.16.1`
