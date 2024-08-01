@@ -1,17 +1,21 @@
-# Використовуємо базовий образ з Python
-FROM python:3.12.1
+# Use the official lightweight Python image.
+# https://hub.docker.com/_/python
+FROM python:3.8-slim
 
-# Встановлюємо робочий каталог в контейнері
+# Set the working directory
 WORKDIR /app
 
-# Копіюємо файл вимог і встановлюємо залежності
+# Copy the requirements file into the container
 COPY requirements.txt .
+
+# Install the dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Копіюємо весь код програми в контейнер
+# Copy the rest of the application code
 COPY . .
 
-COPY models /app/models
+# Expose the port on which the app will run
+EXPOSE 8501
 
-# Вказуємо команду для запуску програми
-CMD ["streamlit", "run", "web_part_streamlit.py"]
+# Run the application
+CMD ["streamlit", "run", "app.py"]
