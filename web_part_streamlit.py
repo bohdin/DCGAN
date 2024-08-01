@@ -29,7 +29,7 @@ def make_generator():
 
 generator = make_generator()
 
-generator.load_weights('.\\models\\generator_weights.h5')
+generator.load_weights('./models/generator_weights.h5')
 
 
 # Discriminator
@@ -52,7 +52,7 @@ def make_discriminator():
 
 discriminator = make_discriminator()
 
-discriminator.load_weights('.\\models\\discriminator_weights.h5')
+discriminator.load_weights('./models/discriminator_weights.h5')
 
 # generated_image = generator(tf.random.normal([1, 100]), training=False)
 # img_array = (generated_image[0].numpy() * 127.5 + 127.5).astype(np.uint8)
